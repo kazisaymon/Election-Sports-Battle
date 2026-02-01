@@ -2,8 +2,8 @@ import streamlit as st
 import random
 import time
 
-# --- Page Configuration ---
-st.set_config(page_title="BD Election Battle 2026", layout="wide", page_icon="🇧🇩")
+# --- Page Configuration (Fixed the Error) ---
+st.set_page_config(page_title="BD Election Battle 2026", layout="wide", page_icon="🇧🇩")
 
 # --- Custom Styling (BD Flag & Game Theme) ---
 st.markdown("""
@@ -98,7 +98,8 @@ else:
     with tab2:
         st.subheader("⚽ Football: Penalty")
         st.write("Score goals to increase popularity!")
-        if st.button("↖️ SHOOT LEFT") or st.button("⬆️ CENTER") or st.button("↗️ RIGHT"):
+        col_f1, col_f2, col_f3 = st.columns(3)
+        if col_f1.button("↖️ LEFT") or col_f2.button("⬆️ CENTER") or col_f3.button("↗️ RIGHT"):
             if random.choice([True, False]):
                 st.success("⚽ GOAL!")
                 st.session_state.c1_pop = min(100, st.session_state.c1_pop + 5)
