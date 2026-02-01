@@ -3,121 +3,169 @@ import random
 import time
 
 # --- Page Configuration ---
-st.set_page_config(page_title="Election Sports Battle", layout="wide", page_icon="🗳️")
+st.set_page_config(page_title="BD Election Battle 2026", layout="wide", page_icon="🇧🇩")
 
-# --- Custom Styling ---
+# --- Custom Styling (BD Flag Theme & Mobile Game UI) ---
 st.markdown("""
     <style>
-    .stButton>button { 
-        width: 100%; border-radius: 10px; height: 3.5em; font-weight: bold; 
-        background-color: #006a4e; color: white;
+    /* Main Background */
+    .stApp {
+        background-color: #006a4e; /* Deep Green */
+        color: white;
     }
-    .rally-box {
-        background-color: #e8f5e9;
-        border: 2px dashed #2e7d32;
-        padding: 20px;
-        border-radius: 15px;
+    /* Mobile Style Scoreboard */
+    .scoreboard {
+        background: linear-gradient(145deg, #f42a41, #8b1a26); /* Red Gradient */
+        padding: 25px;
+        border-radius: 20px;
         text-align: center;
-        margin-top: 10px;
+        border: 4px solid #ffffff;
+        box-shadow: 0px 10px 20px rgba(0,0,0,0.4);
+        margin-bottom: 25px;
     }
-    .game-container {
-        border: 4px solid #006a4e;
+    /* Game Controller Buttons */
+    .stButton>button {
+        width: 100%;
+        border-radius: 50px;
+        height: 4.5em;
+        font-weight: bold;
+        font-size: 18px;
         background-color: #ffffff;
-        padding: 20px;
-        border-radius: 15px;
+        color: #006a4e;
+        border: 3px solid #ffd700;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #ffd700;
+        color: #006a4e;
+        transform: scale(1.05);
+    }
+    /* Slogan Animation Styling */
+    .slogan-text {
+        font-size: 30px;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 2px 2px #f42a41;
         text-align: center;
-        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.2);
+        margin: 5px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- App Logo & Title ---
-col_logo, col_title = st.columns([1, 4])
-with col_logo:
-    st.image("https://img.freepik.com/free-vector/modern-check-mark-election-logo_23-2147514157.jpg", width=150)
-with col_title:
-    st.title("Election Sports Battle 2026")
-    st.write("Campaign with your supporters and win the field!")
-
 # --- Session State ---
 if 'c1_pop' not in st.session_state:
-    st.session_state.update({'c1_pop': 50, 'c2_pop': 50, 'supporters': 100})
+    st.session_state.update({'c1_pop': 50, 'c2_pop': 50, 'game_log': "Ready for the Election Battle!"})
 
-# --- Candidate Settings ---
-with st.expander("⚙️ Candidate Settings", expanded=True):
-    col1, col2 = st.columns(2)
-    symbols = ["Dhaner Shish 🌾🌾", "Scales ⚖️", "Bullock Cart 🐂", "Boat ⛵", "Tractor 🚜"]
-    with col1:
-        c1_name = st.text_input("Candidate 1 Name:", value="Candidate A")
-        c1_mark = st.selectbox("Symbol 1:", symbols, index=0)
-    with col2:
-        c2_name = st.text_input("Candidate 2 Name:", value="Candidate B")
-        c2_mark = st.selectbox("Symbol 2:", symbols, index=1)
+# --- Sidebar Setup ---
+with st.sidebar:
+    st.image("https://img.freepik.com/free-vector/modern-check-mark-election-logo_23-2147514157.jpg", width=100)
+    st.header("🎮 Game Settings")
+    c1_name = st.text_input("Candidate Name:", value="Candidate A")
+    c1_mark = st.selectbox("Your Symbol:", ["Dhaner Shish 🌾🌾", "Scales ⚖️", "Bullock Cart 🐂", "Boat ⛵"])
+    st.divider()
+    if st.button("🔄 Reset Tournament"):
+        st.session_state.c1_pop = 50
+        st.rerun()
 
-st.divider()
+# --- Main UI ---
+st.title("🇧🇩 Election Sports Battle 2026")
 
-# --- Popularity Meter ---
+# --- Scoreboard ---
 st.markdown(f"""
-    <div class="game-container">
-        <h3>📊 Popularity Dashboard</h3>
-        <p style="font-size: 1.5em;"><strong>{c1_name} ({c1_mark}):</strong> {st.session_state.c1_pop}% | Supporters: {st.session_state.stopporters if 'stopporters' in st.session_state else 100}</p>
+    <div class="scoreboard">
+        <h2 style='color: white; margin:0;'>LIVE POPULARITY METER</h2>
+        <div style='display: flex; justify-content: space-around; margin-top:15px;'>
+            <div><p style='margin:0;'>{c1_name}</p><h1 style='color: #ffd700; font-size: 50px;'>{st.session_state.c1_pop}%</h1></div>
+            <div style='border-left: 3px solid white;'></div>
+            <div><p style='margin:0;'>Opponent</p><h1 style='color: #ffffff; font-size: 50px;'>{st.session_state.c2_pop}%</h1></div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# --- Game Tabs ---
-tab1, tab2, tab3, tab4 = st.tabs(["⚽ Football", "🏏 Cricket", "🤝 Outreach", "📢 Campaign Rally"])
+# --- Navigation Tabs ---
+tab1, tab2, tab3 = st.tabs(["⚽ Football Game", "🏏 Cricket Game", "📢 Mega Campaign"])
 
-# --- TAB 1 & 2 (Football & Cricket) ---
+# --- TAB 1: FOOTBALL ---
 with tab1:
-    if st.button("Shoot Penalty"):
-        if random.choice([True, False]):
-            st.success("Goal!")
-            st.session_state.c1_pop += 5
-        else: st.error("Missed!")
+    st.subheader("🥅 Penalty Shootout (Controller)")
+    st.info(f"Log: {st.session_state.game_log}")
+    
+    colA, colB, colC = st.columns(3)
+    shot = None
+    with colA:
+        if st.button("↖️ SHOOT LEFT"): shot = "L"
+    with colB:
+        if st.button("⬆️ SHOOT CENTER"): shot = "C"
+    with colC:
+        if st.button("↗️ SHOOT RIGHT"): shot = "R"
+    
+    if shot:
+        keeper = random.choice(["L", "C", "R"])
+        if shot != keeper:
+            st.session_state.game_log = "⚽ GOAL! The crowd is cheering for you!"
+            st.session_state.c1_pop = min(100, st.session_state.c1_pop + 7)
+            st.balloons()
+        else:
+            st.session_state.game_log = "❌ SAVED! Better luck next time."
+            st.session_state.c1_pop = max(0, st.session_state.c1_pop - 4)
+        st.rerun()
 
+# --- TAB 2: CRICKET ---
 with tab2:
-    if st.button("Hit Six"):
-        st.balloons()
-        st.session_state.c1_pop += 10
+    st.subheader("🏏 Cricket Batting (Controller)")
+    st.info(f"Commentary: {st.session_state.game_log}")
+    
+    col_l, col_r = st.columns(2)
+    hit = None
+    with col_l:
+        if st.button("🏏 DEFENSIVE PUSH"): hit = "D"
+    with col_r:
+        if st.button("🚀 POWER HIT (SIX)"): hit = "A"
+        
+    if hit:
+        if hit == "A":
+            if random.random() > 0.4:
+                st.session_state.game_log = "🚀 OUT OF THE PARK! MASSIVE SIX!"
+                st.session_state.c1_pop = min(100, st.session_state.c1_pop + 12)
+                st.snow()
+            else:
+                st.session_state.game_log = "☝️ CAUGHT! The fielder made no mistake."
+                st.session_state.c1_pop = max(0, st.session_state.c1_pop - 8)
+        else:
+            st.session_state.game_log = "🏃 Smart rotation of strike. 2 Runs!"
+            st.session_state.c1_pop = min(100, st.session_state.c1_pop + 2)
+        st.rerun()
 
-# --- TAB 3: PUBLIC OUTREACH ---
+# --- TAB 3: MEGA CAMPAIGN & SLOGANS ---
 with tab3:
-    st.subheader("Leader Meeting Citizens")
-    st.image("https://img.freepik.com/free-vector/politician-speaking-crowd_23-2147514164.jpg", width=600)
-    if st.button("Solve Local Issue"):
-        st.info("You solved a water problem! Popularity increased.")
-        st.session_state.c1_pop += 8
-
-# --- NEW TAB 4: CAMPAIGN RALLY (The "Prochar" Feature) ---
-with tab4:
-    st.subheader(f"📢 Mega Rally: {c1_name} with Supporters")
+    st.subheader("📢 Mass Campaigning with Supporters")
+    st.image("https://img.freepik.com/free-vector/politician-concept-illustration_114360-14578.jpg", use_container_width=True)
     
-    # প্রচারণা বা মিছিলের ছবি (কার্টুন টাইপ)
-    st.image("https://img.freepik.com/free-vector/politician-concept-illustration_114360-14578.jpg", 
-             caption="Candidate walking with a massive crowd and banners", use_container_width=True)
-    
-    st.markdown("""
-        <div class='rally-box'>
-            <h4>The leader is walking through the streets...</h4>
-            <p>Supporters are chanting slogans and carrying banners! 📢</p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    if st.button("Start Campaign Procession (মিছিল শুরু করুন)"):
-        with st.status("Walking through the area...", expanded=True) as status:
-            st.write("Joining with local people...")
-            time.sleep(1)
-            st.write("Distributing leaflets...")
-            time.sleep(1)
-            gain = random.randint(5, 12)
+    if st.button("🔊 START RALLY & CHANT (মিছিল ও স্লোগান শুরু করুন)"):
+        slogans = [
+            "🇧🇩 BANGLADESH ZINDABAD!", 
+            f"📢 {c1_mark} ER JOY HOBEI!",
+            "📢 DESHER NETRE, {c1_name}!" ,
+            "🇧🇩 BANGLADESH ZINDABAD!"
+        ]
+        
+        with st.status("Procession Moving Through the Area...", expanded=True) as status:
+            for s in slogans:
+                time.sleep(1.2)
+                st.markdown(f"<div class='slogan-text'>{s}</div>", unsafe_allow_html=True)
+            
+            gain = random.randint(10, 20)
             st.session_state.c1_pop = min(100, st.session_state.c1_pop + gain)
-            status.update(label=f"Campaign Successful! Gained {gain}% Popularity!", state="complete")
-        st.snow()
+            status.update(label=f"Mega Rally Success! Gained {gain}% Popularity!", state="complete")
+        st.rerun()
 
-# --- Final Win Condition ---
+# --- Victory Condition ---
 if st.session_state.c1_pop >= 95:
     st.balloons()
-    st.header(f"🎊 {c1_name} ({c1_mark}) WON! 🎊")
-    if st.button("Reset Game"):
-        st.session_state.c1_pop = 50
-        st.rerun()
+    st.markdown(f"<h1 style='text-align: center; color: #ffd700; background-color: #f42a41; padding: 20px; border-radius: 20px;'>🎉 {c1_name} ({c1_mark}) HAS WON THE ELECTION! 🎉</h1>", unsafe_allow_html=True)
+
+st.markdown("---")
+st.caption("Developed with Pride in Bangladesh | 2026")
