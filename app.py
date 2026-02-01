@@ -3,125 +3,121 @@ import random
 import time
 
 # --- Page Configuration ---
-st.set_page_config(page_title="Election Sports Arena", layout="wide", page_icon="🗳️")
+st.set_page_config(page_title="Election Sports Battle", layout="wide", page_icon="🗳️")
 
 # --- Custom Styling ---
 st.markdown("""
     <style>
-    .game-container {
-        border: 5px solid #006a4e;
-        background-color: #2e7d32;
+    .stButton>button { 
+        width: 100%; border-radius: 10px; height: 3.5em; font-weight: bold; 
+        background-color: #006a4e; color: white;
+    }
+    .rally-box {
+        background-color: #e8f5e9;
+        border: 2px dashed #2e7d32;
         padding: 20px;
         border-radius: 15px;
         text-align: center;
-        color: white;
-        margin-bottom: 20px;
+        margin-top: 10px;
     }
-    .stButton>button { width: 100%; border-radius: 10px; height: 3em; font-weight: bold; background-color: #006a4e; color: white; border: none; }
-    .stButton>button:hover { background-color: #004d39; color: #ffd700; }
-    .problem-card {
-        background-color: #f7f7f7;
-        border-left: 5px solid #ff4b4b;
-        padding: 15px;
-        margin-top: 15px;
-        border-radius: 8px;
-        color: #333;
+    .game-container {
+        border: 4px solid #006a4e;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🗳️ Election Sports Battle 2026")
+# --- App Logo & Title ---
+col_logo, col_title = st.columns([1, 4])
+with col_logo:
+    st.image("https://img.freepik.com/free-vector/modern-check-mark-election-logo_23-2147514157.jpg", width=150)
+with col_title:
+    st.title("Election Sports Battle 2026")
+    st.write("Campaign with your supporters and win the field!")
 
 # --- Session State ---
 if 'c1_pop' not in st.session_state:
-    st.session_state.update({
-        'c1_pop': 50, 
-        'c2_pop': 50, 
-        'current_problem': None,
-        'problem_solved_count': 0
-    })
+    st.session_state.update({'c1_pop': 50, 'c2_pop': 50, 'supporters': 100})
 
-# --- Candidate Setup ---
-col1, col2 = st.columns(2)
-with col1:
-    c1_name = st.text_input("Candidate 1 Name:", value="Candidate A")
-    c1_mark = st.selectbox("Symbol 1:", ["ধানের শীষ 🌾🌾", "দাঁড়িপাল্লা ⚖️", "গরুর গাড়ি 🐂", "নৌকা ⛵", "লাঙ্গল 🚜"])
-with col2:
-    c2_name = st.text_input("Candidate 2 Name:", value="Candidate B")
-    c2_mark = st.selectbox("Symbol 2:", ["দাঁড়িপাল্লা ⚖️", "ধানের শীষ 🌾🌾", "গরুর গাড়ি 🐂", "নৌকা ⛵", "লাঙ্গল 🚜"], index=1)
+# --- Candidate Settings ---
+with st.expander("⚙️ Candidate Settings", expanded=True):
+    col1, col2 = st.columns(2)
+    symbols = ["Dhaner Shish 🌾🌾", "Scales ⚖️", "Bullock Cart 🐂", "Boat ⛵", "Tractor 🚜"]
+    with col1:
+        c1_name = st.text_input("Candidate 1 Name:", value="Candidate A")
+        c1_mark = st.selectbox("Symbol 1:", symbols, index=0)
+    with col2:
+        c2_name = st.text_input("Candidate 2 Name:", value="Candidate B")
+        c2_mark = st.selectbox("Symbol 2:", symbols, index=1)
 
 st.divider()
 
 # --- Popularity Meter ---
 st.markdown(f"""
     <div class="game-container">
-        <h3>📊 Live Popularity Meter</h3>
-        <p><strong>{c1_name} ({c1_mark}):</strong> {st.session_state.c1_pop}% | <strong>{c2_name} ({c2_mark}):</strong> {st.session_state.c2_pop}%</p>
+        <h3>📊 Popularity Dashboard</h3>
+        <p style="font-size: 1.5em;"><strong>{c1_name} ({c1_mark}):</strong> {st.session_state.c1_pop}% | Supporters: {st.session_state.stopporters if 'stopporters' in st.session_state else 100}</p>
     </div>
     """, unsafe_allow_html=True)
 
 # --- Game Tabs ---
-tab1, tab2, tab3 = st.tabs(["⚽ Football", "🏏 Cricket", "🤝 Public Outreach"])
+tab1, tab2, tab3, tab4 = st.tabs(["⚽ Football", "🏏 Cricket", "🤝 Outreach", "📢 Campaign Rally"])
 
-# --- TAB 1: FOOTBALL ---
+# --- TAB 1 & 2 (Football & Cricket) ---
 with tab1:
-    st.subheader("Penalty Shootout!")
-    shot_col1, shot_col2, shot_col3 = st.columns(3)
-    shot = None
-    if shot_col1.button("Shoot Left"): shot = "L"
-    if shot_col2.button("Shoot Center"): shot = "C"
-    if shot_col3.button("Shoot Right"): shot = "R"
-    
-    if shot:
-        if shot != random.choice(["L", "C", "R"]):
-            st.success("⚽ GOAL!")
-            st.session_state.c1_pop = min(100, st.session_state.c1_pop + 5)
-        else:
-            st.error("❌ SAVED!")
+    if st.button("Shoot Penalty"):
+        if random.choice([True, False]):
+            st.success("Goal!")
+            st.session_state.c1_pop += 5
+        else: st.error("Missed!")
 
-# --- TAB 2: CRICKET ---
 with tab2:
-    st.subheader("Cricket Batting")
-    timing = st.select_slider("Timing:", options=["Early", "Perfect", "Late"])
-    if st.button("Hit the Ball"):
-        if timing == "Perfect":
-            st.success("🚀 SIX!")
-            st.session_state.c1_pop = min(100, st.session_state.c1_pop + 10)
-        else:
-            st.info("🏃 Single Run")
-            st.session_state.c1_pop = min(100, st.session_state.c1_pop + 1)
+    if st.button("Hit Six"):
+        st.balloons()
+        st.session_state.c1_pop += 10
 
-# --- TAB 3: PUBLIC OUTREACH (Fixed Image Error) ---
+# --- TAB 3: PUBLIC OUTREACH ---
 with tab3:
-    st.subheader("Engagement with Citizens")
+    st.subheader("Leader Meeting Citizens")
+    st.image("https://img.freepik.com/free-vector/politician-speaking-crowd_23-2147514164.jpg", width=600)
+    if st.button("Solve Local Issue"):
+        st.info("You solved a water problem! Popularity increased.")
+        st.session_state.c1_pop += 8
+
+# --- NEW TAB 4: CAMPAIGN RALLY (The "Prochar" Feature) ---
+with tab4:
+    st.subheader(f"📢 Mega Rally: {c1_name} with Supporters")
     
-    # Static Cartoon Image Link (Error fixed)
-    st.image("https://img.freepik.com/free-vector/politician-speaking-crowd_23-2147514164.jpg", 
-             caption="Leader meeting the public", use_container_width=True)
+    # প্রচারণা বা মিছিলের ছবি (কার্টুন টাইপ)
+    st.image("https://img.freepik.com/free-vector/politician-concept-illustration_114360-14578.jpg", 
+             caption="Candidate walking with a massive crowd and banners", use_container_width=True)
+    
+    st.markdown("""
+        <div class='rally-box'>
+            <h4>The leader is walking through the streets...</h4>
+            <p>Supporters are chanting slogans and carrying banners! 📢</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Start Campaign Procession (মিছিল শুরু করুন)"):
+        with st.status("Walking through the area...", expanded=True) as status:
+            st.write("Joining with local people...")
+            time.sleep(1)
+            st.write("Distributing leaflets...")
+            time.sleep(1)
+            gain = random.randint(5, 12)
+            st.session_state.c1_pop = min(100, st.session_state.c1_pop + gain)
+            status.update(label=f"Campaign Successful! Gained {gain}% Popularity!", state="complete")
+        st.snow()
 
-    if st.session_state.current_problem is None:
-        if st.button("Meet People"):
-            problems = [
-                {"text": "Bad Road conditions in the village.", "cost": 10, "gain": 15},
-                {"text": "Water shortage in rural areas.", "cost": 15, "gain": 20},
-                {"text": "Electricity Load-shedding issue.", "cost": 5, "gain": 12}
-            ]
-            st.session_state.current_problem = random.choice(problems)
-            st.rerun()
-
-    if st.session_state.current_problem:
-        prob = st.session_state.current_problem
-        st.markdown(f"<div class='problem-card'><b>Problem:</b> {prob['text']}</div>", unsafe_allow_html=True)
-        if st.button(f"Solve (+{prob['gain']} Pop)"):
-            st.session_state.c1_pop = min(100, st.session_state.c1_pop + prob['gain'])
-            st.session_state.current_problem = None
-            st.success("Problem Solved!")
-            st.rerun()
-
-# --- Win Condition ---
+# --- Final Win Condition ---
 if st.session_state.c1_pop >= 95:
     st.balloons()
-    st.header(f"🎊 {c1_name} ({c1_mark}) Won the Election! 🎊")
-    if st.button("Restart Election"):
+    st.header(f"🎊 {c1_name} ({c1_mark}) WON! 🎊")
+    if st.button("Reset Game"):
         st.session_state.c1_pop = 50
         st.rerun()
