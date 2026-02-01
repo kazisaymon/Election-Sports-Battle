@@ -5,7 +5,7 @@
 An interactive, mobile-responsive election simulation game built with **Python** and **Streamlit**. Experience the thrill of a Bangladeshi election campaign through sports, public service, and massive rallies!
 
 ## 🚀 Live Demo
-You can play the game live here:  
+You can play the game live here:  https://election-sports-battle-qeqlzmzmup7uhghcw2mh4w.streamlit.app/
 👉 **[Click Here for Live Demo]([https://election-sports-battle.streamlit.app/](https://election-sports-battle-qeqlzmzmup7uhghcw2mh4w.streamlit.app/))** *(Replace the link with your actual Streamlit Cloud URL)*
 
 ---
