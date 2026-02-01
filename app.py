@@ -58,101 +58,107 @@ st.divider()
 # --- Visual Arena & Popularity ---
 st.markdown(f"""
     <div class="game-container">
-        <h3>📊 লাইভ পপুলারিটি মিটার</h3>
+        <h3>📊 Live Popularity Meter</h3>
         <p><strong>{c1_name} ({c1_mark}):</strong> {st.session_state.c1_pop}% | <strong>{c2_name} ({c2_mark}):</strong> {st.session_state.c2_pop}%</p>
     </div>
     """, unsafe_allow_html=True)
 
 # --- Interactive Game Logic ---
-tab1, tab2, tab3 = st.tabs(["⚽ ফুটবল (পেনাল্টি)", "🏏 ক্রিকেট (ব্যাটিং)", "🤝 জনসংযোগ"])
+tab1, tab2, tab3 = st.tabs(["⚽ Football (Penalty)", "🏏 Cricket (Batting)", "🤝 Public Outreach"])
 
 # --- TAB 1: FOOTBALL ---
 with tab1:
-    st.subheader("গোলপোস্টের কোথায় শট মারবেন?")
+    st.subheader("Where will you shoot?")
     
     goal_col1, goal_col2, goal_col3 = st.columns(3)
     shot = None
     with goal_col1:
-        if st.button("🥅 উপরের বাম কোণা"): shot = "TL"
+        if st.button("🥅 Top Left Corner"): shot = "TL"
     with goal_col2:
-        if st.button("🥅 মাঝখানে"): shot = "C"
+        if st.button("🥅 Center"): shot = "C"
     with goal_col3:
-        if st.button("🥅 উপরের ডান কোণা"): shot = "TR"
+        if st.button("🥅 Top Right Corner"): shot = "TR"
         
     if shot:
         keeper_pos = random.choice(["TL", "C", "TR", "BL", "BR"]) 
         if shot == keeper_pos:
-            st.error(f"❌ গোলকিপার বল ঠেকিয়ে দিয়েছে! {c2_name} এর সমর্থকরা স্লোগান দিচ্ছে!")
+            st.error(f"❌ Goalkeeper saved the ball! Supporters of {c2_name} are cheering!")
             st.session_state.c1_pop = max(0, st.session_state.c1_pop - 3)
         else:
-            st.success(f"⚽ গোললললল! {c1_name} এর {c1_mark} প্রতীকের জয়জয়কার!")
+            st.success(f"⚽ GOOOOOAL! {c1_name} ({c1_mark}) is on fire!")
             st.balloons()
             st.session_state.c1_pop = min(100, st.session_state.c1_pop + 8)
 
 # --- TAB 2: CRICKET ---
 with tab2:
-    st.subheader("বোলার বল করছে... সঠিক টাইমিংয়ে মারুন!")
+    st.subheader("Bowler is bowling... hit with perfect timing!")
     
-    timing = st.select_slider("আপনার ব্যাটের সুইং টাইমিং ঠিক করুন:", options=["খুব আগে", "পারফেক্ট", "দেরি করে"])
+    timing = st.select_slider("Set your bat swing timing:", options=["Too Early", "Perfect", "Too Late"])
     
-    if st.button("🏏 ব্যাট ঘুরান!"):
-        ball_type = random.choice(["খুব আগে", "পারফেক্ট", "দেরি করে"])
+    if st.button("🏏 Swing the Bat!"):
+        ball_type = random.choice(["Too Early", "Perfect", "Too Late"])
         
         if timing == ball_type:
-            if timing == "পারফেক্ট":
-                st.success(f"🚀 বিশাল ছক্কা! {c1_mark} এখন সবার মুখে মুখে!")
+            if timing == "Perfect":
+                st.success(f"🚀 Huge Six! {c1_mark} is now the talk of the town!")
                 st.session_state.c1_pop = min(100, st.session_state.c1_pop + 12)
             else:
-                st.info("🏃 সিঙ্গেল রান! পপুলারিটি ১% বাড়লো।")
+                st.info("🏃 Single run! Popularity increased by 1%.")
                 st.session_state.c1_pop = min(100, st.session_state.c1_pop + 1)
         else:
-            st.error(f"☝️ ক্লিন বোল্ড! {c1_name} এর প্রচারণা ধাক্কা খেল।")
+            st.error(f"☝️ Clean Bowled! {c1_name}'s campaign took a hit.")
             st.session_state.c1_pop = max(0, st.session_state.c1_pop - 5)
 
-# --- TAB 3: JONOSHONJOG ---
+# --- TAB 3: PUBLIC OUTREACH ---
 with tab3:
-    st.subheader(f"🤝 {c1_name} ({c1_mark}) জনগনের সাথে...")
+    st.subheader(f"🤝 {c1_name} ({c1_mark}) engaging with the public...")
     
-    # জনসংযোগের ছবি
-    st.image("https://i.ibb.co/L66X2jP/jonoshongjog.jpg", caption=f"{c1_name} এলাকার মানুষের সাথে জনসংযোগে", use_column_width=True) 
-    # এই ইমেজ লিঙ্কটি একটি placeholder, আপনি আপনার পছন্দের ছবি ব্যবহার করতে পারেন।
+    # জনসংযোগের ছবি - কার্টুন স্টাইল ইমেজ জেনারেশন
+    # Image Generation: enabled.
+    st.image(
+"""
+A cartoon-style image of a politician walking through a village or rural area, surrounded by many people. The people are looking at the politician, and some are reaching out or talking to him, sharing their problems. The background shows village houses, trees, and possibly some campaign banners in the distance. The politician has a friendly and attentive expression.
+""",
+        caption=f"{c1_name} on a public outreach program, listening to people's problems (Cartoon Style)",
+        use_column_width=True
+    )
 
     if st.session_state.current_problem is None:
-        st.write("এলাকার মানুষের সাথে কথা বলুন এবং তাদের সমস্যা শুনুন।")
-        if st.button("মানুষের সাথে দেখা করুন"):
+        st.write("Talk to the people and listen to their problems.")
+        if st.button("Meet the people"):
             problems = [
-                {"text": "রাস্তাঘাটের অবস্থা খুব খারাপ, বর্ষায় চলাফেরা করা যায় না।", "cost": 15, "pop_gain": 10},
-                {"text": "খাবার পানির খুব অভাব, দূর থেকে পানি আনতে হয়।", "cost": 20, "pop_gain": 15},
-                {"text": "স্কুলে শিক্ষক নেই, পড়াশোনা ব্যাহত হচ্ছে।", "cost": 10, "pop_gain": 8},
-                {"text": "হাসপাতালের পরিষেবা একদম নিম্নমানের।", "cost": 25, "pop_gain": 18},
-                {"text": "বিদ্যুতের লোডশেডিংয়ে জীবন দুর্বিষহ।", "cost": 18, "pop_gain": 12}
+                {"text": "The roads are in very bad condition, making travel difficult in the rainy season.", "cost": 15, "pop_gain": 10},
+                {"text": "There is a severe shortage of drinking water; we have to fetch water from afar.", "cost": 20, "pop_gain": 15},
+                {"text": "There are no teachers in the school, disrupting education.", "cost": 10, "pop_gain": 8},
+                {"text": "Hospital services are very poor.", "cost": 25, "pop_gain": 18},
+                {"text": "Life is unbearable due to electricity load shedding.", "cost": 18, "pop_gain": 12}
             ]
             st.session_state.current_problem = random.choice(problems)
-            st.rerun() # সমস্যা দেখানোর জন্য রিফ্রেশ
+            st.rerun() # Refresh to show the problem
 
     if st.session_state.current_problem:
         problem = st.session_state.current_problem
-        st.markdown(f"<div class='problem-card'><h4>একজন নাগরিকের অভিযোগ:</h4><p>{problem['text']}</p><p>সমাধানের খরচ: {problem['cost']} পপুলারিটি পয়েন্ট</p></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='problem-card'><h4>A Citizen's Complaint:</h4><p>{problem['text']}</p><p>Solution Cost: {problem['cost']} Popularity Points</p></div>", unsafe_allow_html=True)
         
         col_sol1, col_sol2 = st.columns(2)
-        if col_sol1.button(f"সমাধান করুন (+{problem['pop_gain']} পপুলারিটি)"):
-            if st.session_state.c1_pop >= problem['cost']: # পপুলারিটি থেকে খরচ
+        if col_sol1.button(f"Solve Problem (+{problem['pop_gain']} Popularity)"):
+            if st.session_state.c1_pop >= problem['cost']: # Cost from popularity
                 st.session_state.c1_pop -= problem['cost']
                 st.session_state.c1_pop = min(100, st.session_state.c1_pop + problem['pop_gain'])
                 st.session_state.problem_solved_count += 1
-                st.success(f"✅ সমস্যা সমাধান হয়েছে! {c1_name} এর জনপ্রিয়তা বৃদ্ধি পেল।")
-                st.session_state.current_problem = None # সমস্যা সমাধান হলে নতুন সমস্যার জন্য অপেক্ষা
+                st.success(f"✅ Problem solved! {c1_name}'s popularity increased.")
+                st.session_state.current_problem = None # Reset for next problem
                 st.rerun()
             else:
-                st.error("আপনার পর্যাপ্ত পপুলারিটি নেই এই সমস্যাটি সমাধানের জন্য!")
-        if col_sol2.button("বাদ দিন (No action)"):
-            st.session_state.c1_pop = max(0, st.session_state.c1_pop - 5) # সমস্যা উপেক্ষা করলে পপুলারিটি কমবে
-            st.warning("আপনি সমস্যাটি উপেক্ষা করলেন। জনগণের অসন্তোষ বাড়লো!")
+                st.error("You don't have enough popularity to solve this problem!")
+        if col_sol2.button("Ignore (No action)"):
+            st.session_state.c1_pop = max(0, st.session_state.c1_pop - 5) # Popularity decreases if problem ignored
+            st.warning("You ignored the problem. Public dissatisfaction increased!")
             st.session_state.current_problem = None
             st.rerun()
 
     if st.session_state.problem_solved_count > 0:
-        st.info(f"এ পর্যন্ত {st.session_state.problem_solved_count}টি সমস্যা সমাধান করেছেন!")
+        st.info(f"Problems solved so far: {st.session_state.problem_solved_count}")
 
 
 # --- Final Win Logic ---
@@ -160,8 +166,8 @@ st.divider()
 if st.session_state.c1_pop >= 95:
     st.balloons()
     st.snow()
-    st.header(f"🎊 রাজকীয় জয়! {c1_name} ({c1_mark}) নির্বাচিত হয়েছেন! 🎊")
-    if st.button("নতুন ইলেকশন শুরু করুন"):
+    st.header(f"🎊 Grand Victory! {c1_name} ({c1_mark}) has been elected! 🎊")
+    if st.button("Start a New Election"):
         st.session_state.c1_pop = 50
         st.session_state.c2_pop = 50
         st.session_state.current_problem = None
@@ -169,4 +175,4 @@ if st.session_state.c1_pop >= 95:
         st.rerun()
 
 st.divider()
-st.caption("© 2026 Election Simulation Game | এটি একটি বিনোদনমূলক গেম মাত্র।")
+st.caption("© 2026 Election Simulation Game | This is for entertainment purposes only.")
